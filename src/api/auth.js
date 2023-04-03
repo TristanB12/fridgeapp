@@ -7,8 +7,10 @@ const login = async (dto) => axiosAPI({
   data: dto,
 });
 
-const signup = async () => axiosAPI({
-
+const signup = async (dto) => axiosAPI({
+  method: "POST",
+  url: "/auth/signup",
+  data: dto,
 });
 
 export {

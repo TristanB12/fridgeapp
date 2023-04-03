@@ -1,3 +1,4 @@
+import { RecoilRoot } from 'recoil';
 import StackNavigation from './src/navigation/Stack';
 import { NativeBaseProvider, extendTheme } from "native-base";
 
@@ -19,7 +20,9 @@ export default function App() {
   })
   return (
       <NativeBaseProvider theme={theme}>
-        <StackNavigation  />
+        <RecoilRoot>
+          <StackNavigation  />
+        </RecoilRoot>
       </NativeBaseProvider>
   );
 }

@@ -1,18 +1,27 @@
-import { Box, Button, Column, Container, Heading, Icon, Input, Text, Row, Spacer, Pressable, Image } from "native-base";
+import { Box, Button, Column, Icon, Input, Row, Image } from "native-base";
 import React, { useState } from "react";
 import api from "../api";
 import FontAwesome from '@expo/vector-icons/FontAwesome';
 import BText from "../components/base/BText";
 import BHeading from "../components/base/BHeading";
-
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import illustration from '../../assets/images/login-illustration.png'
+import { useRecoilState } from "recoil";
+import authAtom from "../recoil/atoms/auth";
+import { useNavigation } from "@react-navigation/native";
 
 export default function LoginScreen() {
+  const navigation = useNavigation();
   const [emailInput, changeEmailInput] = useState();
   const [passwordInput, changePasswordInput] = useState();
   const [isButtonLoading, changeIsButtonLoading] = useState(false);
   
-  const apiError = React.useRef('');
+  const [errorMessage, changeErrorMessage] = useState(null);
+  const [auth, setAuth] = useRecoilState(authAtom);
+
+  function navigateToRegister() {
+    navigation.navigate('Signup')
+  }
 
   async function login() {
     console.log(emailInput, passwordInput);
@@ -24,10 +33,24 @@ export default function LoginScreen() {
         email: emailInput,
         password: passwordInput
       })
-      console.log(res);
+      try {
+        await AsyncStorage.setItem("TOKEN", res.data.access_token);
+      } catch (error) {
+        console.error("FAILED TO STORE ACCESS TOKEN")
+      }
+      setAuth({
+        expires_in: res.data.expires_in,
+        access_token: res.data.access_token
+      });
+      navigation.navigate('Fridge');
       changeIsButtonLoading(false);
     } catch (error) {
-      
+      if (error.response.status < 500) {
+        changeErrorMessage(error.response.data.message);
+      } else {
+        changeErrorMessage('Unknown error, please contact us.');
+      }
+      changePasswordInput('');
       changeIsButtonLoading(false);
     }
   }
@@ -55,11 +78,12 @@ export default function LoginScreen() {
             variant="underlined"
             placeholder="Password"
             type="password"
+            value={passwordInput}
             onChangeText={(e) => changePasswordInput(e)}
 
           />
         </Row>
-        <BText mb={3} alignSelf="flex-end" color="secondary.600" fontWeight="semibold">Forgot password?</BText>
+        <BText mb={3} alignSelf="flex-end" color="red.500" fontWeight="semibold">{ errorMessage }</BText>
         <Button
           onPress={login}
           isLoading={isButtonLoading}
@@ -71,7 +95,7 @@ export default function LoginScreen() {
           Login
         </Button>
       </Column>
-      <BText alignSelf="center">New to Fridgy? <BText color="secondary.600" fontWeight="semibold">Register</BText></BText>
+      <BText alignSelf="center">New to Fridgy? <BText color="secondary.600" fontWeight="semibold" onPress={navigateToRegister}>Register</BText></BText>
     </Box>
   );
 }
