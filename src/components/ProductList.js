@@ -6,7 +6,7 @@ import BHeading from "../components/base/BHeading";
 import ProductItem from "./ProductItem";
 import dayjs from "dayjs";
 
-export default function ProductList() {
+export default function ProductList({handleProductPressed}) {
   const [productList, setProductList] = useRecoilState(productListAtom);
 
   function sortedProductList() {
@@ -44,8 +44,8 @@ export default function ProductList() {
     )
   }
   return (
-    <Column w="90%" alignSelf="center">
-      {sortedProductList().map(e => <ProductItem key={e.id} product={e} />)}
+    <Column w="90%" mt={2} alignSelf="center">
+      {sortedProductList().map(e => <ProductItem handleProductPressed={handleProductPressed} key={e.id} product={e} />)}
     </Column>
   );
 }

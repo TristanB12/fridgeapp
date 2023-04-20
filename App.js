@@ -1,6 +1,6 @@
 import { RecoilRoot } from 'recoil';
 import StackNavigation from './src/navigation/Stack';
-import { NativeBaseProvider, extendTheme } from "native-base";
+import { KeyboardAvoidingView, NativeBaseProvider, extendTheme } from "native-base";
 
 export default function App() {
   const theme = extendTheme({
@@ -19,10 +19,10 @@ export default function App() {
     }
   })
   return (
+    <RecoilRoot>
       <NativeBaseProvider theme={theme}>
-        <RecoilRoot>
-          <StackNavigation  />
-        </RecoilRoot>
+        <StackNavigation  />
       </NativeBaseProvider>
+    </RecoilRoot>
   );
 }

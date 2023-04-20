@@ -1,4 +1,4 @@
-import { Box, Button, Column, Icon, Input, Row, Image } from "native-base";
+import { Box, Button, Column, Icon, Input, Row, Image, KeyboardAvoidingView, ScrollView } from "native-base";
 import React, { useState } from "react";
 import api from "../api";
 import FontAwesome from '@expo/vector-icons/FontAwesome';
@@ -6,8 +6,17 @@ import BText from "../components/base/BText";
 import BHeading from "../components/base/BHeading";
 
 import illustration from '../../assets/images/signup-illustration.png';
+import { loadApp } from "../navigation/onAppStarting";
+import productListAtom from "../recoil/atoms/productList";
+import { useRecoilState } from "recoil";
+import authAtom from "../recoil/atoms/auth";
+import { useNavigation } from "@react-navigation/native";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
-export default function SignupScreen({navigation}) {
+export default function SignupScreen() {
+  const navigation = useNavigation();
+  const [auth, setAuth] = useRecoilState(authAtom);
+  const [productList, setProductList] = useRecoilState(productListAtom);
   const [emailInput, changeEmailInput] = useState();
   const [passwordInput, changePasswordInput] = useState();
   const [confirmPasswordInput, ChangeConfirmPasswordInput] = useState();
@@ -33,6 +42,17 @@ export default function SignupScreen({navigation}) {
         email: emailInput,
         password: passwordInput
       })
+      try {
+        await AsyncStorage.setItem("TOKEN", res.data.access_token);
+      } catch (error) {
+        console.error("FAILED TO STORE ACCESS TOKEN");
+      }
+      setAuth({
+        expires_in: res.data.expires_in,
+        access_token: res.data.access_token
+      });
+      loadApp(setAuth, setProductList);
+      navigation.navigate('Fridge');
       changeIsButtonLoading(false);
     } catch (error) {
       if (error?.response.status < 500) {
@@ -46,7 +66,8 @@ export default function SignupScreen({navigation}) {
     }
   }
   return (
-    <Box m={8}>
+    <KeyboardAvoidingView flex={1} behavior='padding'>
+    <ScrollView m={8}>
       <Image alignSelf="center" source={illustration} size={220} alt="login illustration" />
       <BHeading mb={6}>Sign up</BHeading>
       <Column>
@@ -84,7 +105,6 @@ export default function SignupScreen({navigation}) {
             type="password"
             value={confirmPasswordInput}
             onChangeText={(e) => ChangeConfirmPasswordInput(e)}
-
           />
         </Row>
         <BText mb={3} alignSelf="flex-end" color="red.500" fontWeight="semibold">{ errorMessage }</BText>
@@ -100,6 +120,7 @@ export default function SignupScreen({navigation}) {
         </Button>
       </Column>
       <BText alignSelf="center">Joined us before? <BText color="secondary.600" fontWeight="semibold" onPress={navigateToLogin}>Login</BText></BText>
-    </Box>
+    </ScrollView>
+    </KeyboardAvoidingView>
   );
 }

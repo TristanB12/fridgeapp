@@ -1,5 +1,5 @@
 import { signup, login } from "./auth";
-import { getAllProduct } from "./product";
+import { createProduct, getAllProducts, updateProduct } from "./product";
 
 export default {
   auth: {
@@ -7,6 +7,8 @@ export default {
     login,
   },
   product: {
-    getAll: getAllProduct
+    getAll: getAllProducts,
+    update: updateProduct,
+    create: createProduct
   }
 }

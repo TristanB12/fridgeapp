@@ -33,8 +33,8 @@ export default function StackNavigation() {
         {
           auth.isSignedIn === false ? (
             <>
-              <Stack.Screen name="Login" component={LoginScreen} screenOptions={{headerShown: false }} />
-              <Stack.Screen name="Signup" component={SignupScreen} screenOptions={{headerShown: false }} />
+              <Stack.Screen name="Login" component={LoginScreen} options={{headerShown: false }} />
+              <Stack.Screen name="Signup" component={SignupScreen} options={{headerShown: false }} />
             </>
           ) : (
             <Stack.Group screenOptions={{ headerStyle: { backgroundColor: '#FF9F68' }, headerTitleStyle: { color: 'white', fontSize: 24, fontWeight: "600" } }}>

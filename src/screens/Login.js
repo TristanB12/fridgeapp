@@ -1,4 +1,4 @@
-import { Box, Button, Column, Icon, Input, Row, Image } from "native-base";
+import { Box, Button, Column, Icon, Input, Row, Image, KeyboardAvoidingView, ScrollView } from "native-base";
 import React, { useState } from "react";
 import api from "../api";
 import FontAwesome from '@expo/vector-icons/FontAwesome';
@@ -9,9 +9,11 @@ import illustration from '../../assets/images/login-illustration.png'
 import { useRecoilState } from "recoil";
 import authAtom from "../recoil/atoms/auth";
 import { useNavigation } from "@react-navigation/native";
+import productListAtom from "../recoil/atoms/productList";
 
 export default function LoginScreen() {
   const navigation = useNavigation();
+  const [productList, setProductList] = useRecoilState(productListAtom);
   const [emailInput, changeEmailInput] = useState();
   const [passwordInput, changePasswordInput] = useState();
   const [isButtonLoading, changeIsButtonLoading] = useState(false);
@@ -36,12 +38,13 @@ export default function LoginScreen() {
       try {
         await AsyncStorage.setItem("TOKEN", res.data.access_token);
       } catch (error) {
-        console.error("FAILED TO STORE ACCESS TOKEN")
+        console.error("FAILED TO STORE ACCESS TOKEN");
       }
       setAuth({
         expires_in: res.data.expires_in,
         access_token: res.data.access_token
       });
+      loadApp(setAuth, setProductList);
       navigation.navigate('Fridge');
       changeIsButtonLoading(false);
     } catch (error) {
@@ -55,47 +58,49 @@ export default function LoginScreen() {
     }
   }
   return (
-    <Box m={8}>
-      <Image alignSelf="center" source={illustration} size={220} alt="login illustration" />
-      <BHeading mb={6}>Login</BHeading>
-      <Column>
-        <Row mb={3} justifyContent="space-between" alignItems="center">
-          <Icon as={FontAwesome} name="at" size={5} color='grey'/>
-          <Input
-            w="90%"
-            size="lg"
-            variant="underlined"
-            placeholder="Email"
-            type="email"
-            onChangeText={(e) => changeEmailInput(e)}
-          />
-        </Row>
-        <Row mb={3} justifyContent="space-between" alignItems="center">
-          <Icon as={FontAwesome} name="lock" size={5} color='grey'/>
-          <Input
-            w="90%"
-            size="lg"
-            variant="underlined"
-            placeholder="Password"
-            type="password"
-            value={passwordInput}
-            onChangeText={(e) => changePasswordInput(e)}
+    <KeyboardAvoidingView behavior="padding" flex={1}>
+      <ScrollView m={8}>
+        <Image alignSelf="center" source={illustration} size={220} alt="login illustration" />
+        <BHeading mb={6}>Login</BHeading>
+        <Column>
+          <Row mb={3} justifyContent="space-between" alignItems="center">
+            <Icon as={FontAwesome} name="at" size={5} color='grey'/>
+            <Input
+              w="90%"
+              size="lg"
+              variant="underlined"
+              placeholder="Email"
+              type="email"
+              onChangeText={(e) => changeEmailInput(e)}
+            />
+          </Row>
+          <Row mb={3} justifyContent="space-between" alignItems="center">
+            <Icon as={FontAwesome} name="lock" size={5} color='grey'/>
+            <Input
+              w="90%"
+              size="lg"
+              variant="underlined"
+              placeholder="Password"
+              type="password"
+              value={passwordInput}
+              onChangeText={(e) => changePasswordInput(e)}
 
-          />
-        </Row>
-        <BText mb={3} alignSelf="flex-end" color="red.500" fontWeight="semibold">{ errorMessage }</BText>
-        <Button
-          onPress={login}
-          isLoading={isButtonLoading}
-          mb={6}
-          borderRadius={10}
-          colorScheme="primary"
-          _text={{fontWeight: "bold"}}
-        >
-          Login
-        </Button>
-      </Column>
-      <BText alignSelf="center">New to Fridgy? <BText color="secondary.600" fontWeight="semibold" onPress={navigateToRegister}>Register</BText></BText>
-    </Box>
+            />
+          </Row>
+          <BText mb={3} alignSelf="flex-end" color="red.500" fontWeight="semibold">{ errorMessage }</BText>
+          <Button
+            onPress={login}
+            isLoading={isButtonLoading}
+            mb={6}
+            borderRadius={10}
+            colorScheme="primary"
+            _text={{fontWeight: "bold"}}
+          >
+            Login
+          </Button>
+        </Column>
+        <BText alignSelf="center">New to Fridgy? <BText color="secondary.600" fontWeight="semibold" onPress={navigateToRegister}>Register</BText></BText>
+      </ScrollView>
+    </KeyboardAvoidingView>
   );
 }

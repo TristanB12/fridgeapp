@@ -14,6 +14,7 @@ async function retrieveProducts(token) {
   try {
     return (await (api.product.getAll(token))).data;
   } catch (error) {
+    console.log(error);
     return null;
   }
 }
@@ -25,7 +26,7 @@ async function loadApp(setAuth, setProductList) {
   setProductList(products);
   setAuth(auth => ({
     ...auth,
-    isSignedIn: (products !== undefined),
+    isSignedIn: (products !== undefined && products !== null),
     isLoading: false,
     access_token: token,
   }));
