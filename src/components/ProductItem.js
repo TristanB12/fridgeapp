@@ -15,7 +15,7 @@ export default function ProductItem({product, handleProductPressed}) {
 
   if (remainingTime <= 0) {
     remainingTimeString = 'expired';
-    remainingTimeColor = 'black.600';
+    remainingTimeColor = 'dark.100';
   }
   return (
     <Pressable pb={2} mb={3} borderBottomColor="#ECECEC" borderBottomWidth={1}  onPress={() => handleProductPressed(product.id)}>

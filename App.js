@@ -1,6 +1,6 @@
 import { RecoilRoot } from 'recoil';
 import StackNavigation from './src/navigation/Stack';
-import { KeyboardAvoidingView, NativeBaseProvider, extendTheme } from "native-base";
+import { NativeBaseProvider, extendTheme } from "native-base";
 
 export default function App() {
   const theme = extendTheme({

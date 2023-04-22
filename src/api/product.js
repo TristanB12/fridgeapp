@@ -22,7 +22,6 @@ const createProduct = async (accessToken, dto) => axiosAPI({
   data: dto
 });
 
-
 export {
   getAllProducts,
   updateProduct,

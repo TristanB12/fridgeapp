@@ -1,57 +1,86 @@
-import Scanner from 'react-native-qrcode-scanner';
-import { RNCamera } from 'react-native-camera';
-import { Button, Icon, View } from "native-base";
-import { useEffect, useState } from "react";
-import FontAwesome from '@expo/vector-icons/FontAwesome';
-import BText from "./base/BText";
-import { Dimensions, StyleSheet, TouchableOpacity } from "react-native";
+import React, { useState, useEffect } from 'react';
+import { Text, View, StyleSheet, Button } from 'react-native';
+import { BarCodeScanner } from 'expo-barcode-scanner';
+import axios from 'axios';
 
-export default function QRCodeScanner() {
+export default function App() {
   const [hasPermission, setHasPermission] = useState(null);
-  const [isScannerActive, setIsScannerActive] = useState(false);
-  const [type, setType] = useState(BarCodeScanner.Constants.Type.back);
   const [scanned, setScanned] = useState(false);
 
-  function activeScanner() {
-    setIsScannerActive(true);
+  const askForCameraPermission = () => {
+    (async () => {
+      const { status } = await BarCodeScanner.requestPermissionsAsync();
+      setHasPermission(status === 'granted');
+    })()
   }
 
-  if (!isScannerActive) {
-    return (
-      <Button
-        onPress={activeScanner}
-        size="lg"
-        borderRadius={10}
-        _text={{fontWeight: "bold"}}
-        leftIcon={<Icon as={FontAwesome} name="qrcode" size={4}/>}
-      >
-      Scan it !</Button>
-    )
-  }
+  useEffect(() => {
+    askForCameraPermission();
+  }, []);
+
+  const handleBarCodeScanned = async ({ type, data }) => {
+    setScanned(true);
+    console.log('Type: ' + type + '\nData: ' + data)
+    try {
+      const res = await axios.get('https://barcode.monster/api/', {
+        params: {
+          barcode: data,
+          formatted: 'y',
+          key: 'npg6j4wi6uc7tytcq60alv0fjs57o8'
+        }
+      })
+      console.log(res);
+    } catch (error) {
+      console.log("youhou")
+      console.log(error.response)
+      throw error;
+    }
+  };
 
   if (hasPermission === null) {
-    return <BText>Requesting for camera permission</BText>;
+    return (
+      <View style={styles.container}>
+        <Text>Requesting for camera permission</Text>
+      </View>)
   }
   if (hasPermission === false) {
-    return <BText>No access to camera</BText>;
+    return (
+      <View style={styles.container}>
+        <Text style={{ margin: 10 }}>No access to camera</Text>
+        <Button title={'Allow Camera'} onPress={() => askForCameraPermission()} />
+      </View>)
   }
 
   return (
-    <Scanner
-    onRead={this.onSuccess}
-    flashMode={RNCamera.Constants.FlashMode.torch}
-    topContent={
-      <Text style={styles.centerText}>
-        Go to{' '}
-        <Text style={styles.textBold}>wikipedia.org/wiki/QR_code</Text> on
-        your computer and scan the QR code.
-      </Text>
-    }
-    bottomContent={
-      <TouchableOpacity style={styles.buttonTouchable}>
-        <Text style={styles.buttonText}>OK. Got it!</Text>
-      </TouchableOpacity>
-    }
-  />
-  )
+    <View style={styles.container}>
+      <View style={styles.barcodebox}>
+        <BarCodeScanner
+          onBarCodeScanned={scanned ? undefined : handleBarCodeScanned}
+          style={{ height: 400, width: 400 }} />
+      </View>
+      {scanned && <Button title={'Scan again?'} onPress={() => setScanned(false)} color='tomato' />}
+    </View>
+  );
 }
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    backgroundColor: '#fff',
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  maintext: {
+    fontSize: 16,
+    margin: 20,
+  },
+  barcodebox: {
+    alignItems: 'center',
+    justifyContent: 'center',
+    height: 150,
+    width: 300,
+    overflow: 'hidden',
+    borderRadius: 30,
+    backgroundColor: 'tomato'
+  }
+});

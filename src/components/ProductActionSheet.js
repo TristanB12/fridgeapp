@@ -7,7 +7,6 @@ import api from "../api";
 import authAtom from "../recoil/atoms/auth";
 import { useState } from "react";
 import BText from "./base/BText";
-import QRCodeScanner from "./QRCodeScanner";
 
 export default function ProductActionSheet(args) {
   const toast = useToast();
@@ -101,7 +100,7 @@ export default function ProductActionSheet(args) {
                     rightIcon={<Icon as={FontAwesome} name="check" size={4} color='#16a34a'/>}
                   >Consumed</Button>
                 </Row>
-              ) :  <QRCodeScanner />
+              ) : <></>
             }
             </ScrollView>
           </KeyboardAvoidingView>

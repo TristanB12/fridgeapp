@@ -12,6 +12,7 @@ import { useRecoilState } from "recoil";
 import authAtom from "../recoil/atoms/auth";
 import { useNavigation } from "@react-navigation/native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import { registerForPushNotificationsAsync } from "../notifications";
 
 export default function SignupScreen() {
   const navigation = useNavigation();
@@ -51,6 +52,7 @@ export default function SignupScreen() {
         expires_in: res.data.expires_in,
         access_token: res.data.access_token
       });
+      await registerForPushNotificationsAsync(res.data.access_token);
       loadApp(setAuth, setProductList);
       navigation.navigate('Fridge');
       changeIsButtonLoading(false);
