@@ -1,6 +1,7 @@
 {
   "cli": {
-    "version": ">= 3.8.1"
+    "version": ">= 3.9.3",
+    "promptToConfigurePushNotifications": false
   },
   "build": {
     "development": {
@@ -18,7 +19,6 @@
     },
     "production": {
       "ios": {
-        "image": "latest",
         "resourceClass": "m-medium"
       }
     }
@@ -29,7 +29,6 @@
         "appleId": "tristan.bourgeois@epitech.eu",
         "ascAppId": "6447934130",
         "appleTeamId": "97RYPDWC9D"
-        
       }
     }
   }

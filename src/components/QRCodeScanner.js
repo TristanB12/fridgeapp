@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+/*import React, { useState, useEffect } from 'react';
 import { Text, View, StyleSheet, Button } from 'react-native';
 import { BarCodeScanner } from 'expo-barcode-scanner';
 import axios from 'axios';
@@ -83,4 +83,4 @@ const styles = StyleSheet.create({
     borderRadius: 30,
     backgroundColor: 'tomato'
   }
-});
+});*/
