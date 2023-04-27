@@ -10,12 +10,22 @@ import { useRecoilState } from "recoil";
 import authAtom from "../recoil/atoms/auth";
 import productListAtom from "../recoil/atoms/productList";
 import HomeScreen from "../screens/Home";
+import { Pressable } from "react-native";
+import { Icon, useDisclose } from "native-base";
+import Material from '@expo/vector-icons/MaterialIcons';
+import SettingsActionSheet from "../components/SettingsActionSheet";
+import ListDetails from "../screens/ListDetails";
 
 const Stack = createNativeStackNavigator();
 
 export default function StackNavigation() {
   const [auth, setAuth] = useRecoilState(authAtom);
   const [productList, setProductList] = useRecoilState(productListAtom);
+  const { isOpen, onOpen, onClose } = useDisclose();
+
+  function openSettingsActionSheet() {
+    onOpen();
+  }
 
   useEffect(() => {
     loadApp(setAuth, setProductList);
@@ -38,9 +48,17 @@ export default function StackNavigation() {
               <Stack.Screen name="Signup" component={SignupScreen} options={{headerShown: false }} />
             </>
           ) : (
-            <Stack.Group screenOptions={{headerShown:  false}}>
-              <Stack.Screen options={{contentStyle: {backgroundColor: '#F2F2F7'}}} name="Home" component={HomeScreen} />
-              <Stack.Screen options={{contentStyle: {backgroundColor: '#F2F2F7'}}} name="Fridge" component={FridgeScreen} />
+            <Stack.Group>
+              <Stack.Screen options={{
+                contentStyle: {backgroundColor: '#F2F2F7'},
+                headerRight: () => (
+                  <Pressable onPress={openSettingsActionSheet}>
+                    <Icon as={Material} alignSelf="flex-end" name="settings" size={25} color="primary.600" />
+                    <SettingsActionSheet isOpen={isOpen} onClose={onClose}  />
+                  </Pressable>
+                )
+              }} name="Home" component={HomeScreen} />
+              <Stack.Screen options={({route, navigation}) => ({contentStyle: {backgroundColor: '#F2F2F7'}, title: route.params.list.name })} name="ListDetails" component={ListDetails} />
             </Stack.Group>
           )
         }

@@ -4,11 +4,8 @@ import productListAtom from "../recoil/atoms/productList";
 import { useRecoilState } from "recoil";
 import BHeading from "../components/base/BHeading";
 import ProductItem from "./ProductItem";
-import dayjs from "dayjs";
 
-export default function ProductList({handleProductPressed}) {
-  const [productList, setProductList] = useRecoilState(productListAtom);
-
+export default function ProductList({handleProductPressed, productList, name}) {
   function sortedProductList() {
     let temp = [...productList];
     temp.sort((a, b)=> new Date(a.expiry_date) - new Date(b.expiry_date));
@@ -38,13 +35,13 @@ export default function ProductList({handleProductPressed}) {
   if (productList.length === 0) {
     return (
       <Center height={400} flex={1}>
-        <BHeading fontSize={22} color="primary.600">Empty fridge</BHeading>
-        <BText textAlign="center">You can start filling your frige with the + button just below.</BText>
+        <BHeading fontSize={22} color="primary.600">{name + ' is empty'}</BHeading>
+        <BText textAlign="center">You can start filling your list with the + button just below.</BText>
       </Center>
     )
   }
   return (
-    <Column w="90%" mt={2} alignSelf="center">
+    <Column w="90%" mt={6} alignSelf="center">
       {sortedProductList().map(e => <ProductItem handleProductPressed={handleProductPressed} key={e.id} product={e} />)}
     </Column>
   );

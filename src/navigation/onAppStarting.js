@@ -10,9 +10,9 @@ async function retrieveToken() {
   }
 }
 
-async function retrieveProducts(token) {
+async function retrieveLists(token) {
   try {
-    return (await (api.product.getAll(token))).data;
+    return (await (api.lists.getAll(token))).data;
   } catch (error) {
     console.log(error);
     return null;
@@ -21,12 +21,12 @@ async function retrieveProducts(token) {
 
 async function loadApp(setAuth, setProductList) {
   const token = await retrieveToken();
-  const products = await retrieveProducts(token);
+  const lists = await retrieveLists(token);
 
-  setProductList(products);
+  setProductList(lists);
   setAuth(auth => ({
     ...auth,
-    isSignedIn: (products !== undefined && products !== null),
+    isSignedIn: (lists !== undefined && lists !== null),
     isLoading: false,
     access_token: token,
   }));

@@ -1,4 +1,4 @@
-import { Actionsheet, Button, Column, Heading, Icon, Pressable, Row, View } from "native-base";
+import { Actionsheet, Button, Column, Heading, Icon, Pressable, Row, View, Circle } from "native-base";
 import BHeading from "./base/BHeading";
 import FontAwesome from '@expo/vector-icons/MaterialIcons';
 import BText from "./base/BText";
@@ -11,6 +11,7 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import { loadApp } from "../navigation/onAppStarting";
 import productListAtom from "../recoil/atoms/productList";
 import api from "../api";
+import Material from '@expo/vector-icons/MaterialIcons';
 
 export default function SettingsActionSheet(args) {
   const [productList, setProductList] = useRecoilState(productListAtom);
@@ -83,7 +84,7 @@ export default function SettingsActionSheet(args) {
           <Column bgColor="white" borderRadius={5} w="100%">
             <Pressable onPress={startLogout}>
               <Row pl={2} justifyContent="space-between" alignItems="center">
-                <Icon w="10%" as={FontAwesome} name="logout" size={6} color="primary.600" />
+              <Circle size="25px" bg="primary.600"><Icon as={Material} name="logout" color="white" /></Circle>
                 <Row py={2} justifyContent="space-between" w="90%" borderBottomColor="gray.200" borderBottomWidth={1}>
                   <BText>Log out</BText>
                   <Icon as={FontAwesome} name="chevron-right" size={6} color="gray.400" />
@@ -92,7 +93,7 @@ export default function SettingsActionSheet(args) {
             </Pressable>
             <Pressable onPress={startDeleteAccount} _pressed={{bgColor: 'gray.200'}}>
               <Row pl={2} justifyContent="space-between" alignItems="center">
-                <Icon w="10%" as={FontAwesome} name="delete" size={6} color="primary.600" />
+              <Circle size="25px" bg="primary.600"><Icon as={Material} name="delete" color="white" /></Circle>
                 <Row py={2} justifyContent="space-between" w="90%">
                   <BText>Delete account</BText>
                   <Icon as={FontAwesome} name="chevron-right" size={6} color="gray.400" />

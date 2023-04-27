@@ -1,8 +1,8 @@
-import { Column, Input, KeyboardAvoidingView, Row, ScrollView, Select } from "native-base";
-import BHeading from "./base/BHeading";
+import { Box, Button, Column, Icon, Input, KeyboardAvoidingView, Row, ScrollView, Select, Text } from "native-base";
 import DateTimePicker from "@react-native-community/datetimepicker";
 import { useRecoilState } from "recoil";
 import actionSheetProductAtom from "../recoil/atoms/actionSheetProduct";
+import MaterialCommunityIcons from '@expo/vector-icons/MaterialCommunityIcons';
 
 export default function ProductActionSheetForm() {
   const [product, setProduct] = useRecoilState(actionSheetProductAtom);
@@ -14,47 +14,60 @@ export default function ProductActionSheetForm() {
     }));
   }
   return (
-       <Column w="100%" px={4} py={8}>
-        <Row my={3} justifyContent="space-between">
-          <Column w="40%">
-            <BHeading fontSize={16} mb={2}>Name</BHeading>
-            <Input
-              size="md"
-              variant="underlined"
-              onChangeText={value => changeProductKeyValue(value, 'name')}
-              value={product.name}
-            />
-          </Column>
-          <Column >
-            <BHeading fontSize={16} mb={2}>Expiry date</BHeading>
+       <Box>
+        <Column mb={4}>
+          <Text fontSize={16} mb={2}>Product name</Text>
+          <Input
+            value={product.name}
+            borderRadius={8}
+            size="md"
+            variant="filled"
+            placeholderTextColor="gray.400"
+            bg="gray.300"
+            placeholder="Add product name..."
+            onChangeText={value => changeProductKeyValue(value, 'name')}
+          />
+        </Column>
+        <Row justifyContent="space-between">
+          <Column w="35%">
+            <Text fontSize={16} mb={2}>Expiry date</Text>
             <DateTimePicker
-              margin={0}
-              testID="dateTimePicker"
+              style={{ marginLeft: -5 }}
               value={new Date(product.expiry_date)}
-              onChange={(event, value) => changeProductKeyValue(value, 'expiry_date')}
               mode={'date'}
               is24Hour={true}
+              onChange={(event, value) => changeProductKeyValue(value, 'expiry_date')}
             />
           </Column>
-        </Row>
-        <Column my={3}>
-          <BHeading fontSize={16}>Quantity</BHeading>
-          <Row w="100%" justifyContent="space-between">
-            <Input
-              keyboardType="numeric"
-              w="35%"
-              size="md"
-              variant="underlined"
-              onChangeText={value => changeProductKeyValue(+value, 'quantity')}
-              value={product.quantity ? product.quantity.toString() : ''}
-            />
-            <Select selectedValue={product.quantity_type} onValueChange={value => changeProductKeyValue(value, 'quantity_type')} minWidth={200} placeholder="Pick a unit measure">
+          <Column w="55%">
+            <Text fontSize={16} mb={2}>Quantity</Text>
+            <Row>
+              <Input
+                keyboardType="numeric"
+                width="30%"
+                size="md"
+                variant="filled"
+                placeholder="000"
+                placeholderTextColor="gray.400"
+                bg="gray.300"
+                onChangeText={value => changeProductKeyValue(+value, 'quantity')}
+                value={product.quantity ? product.quantity.toString() : ''}
+              />
+              <Select
+                minW="70%"
+                bg="gray.300"
+                selectedValue={product.quantity_type}
+                onValueChange={value => changeProductKeyValue(value, 'quantity_type')}
+                dropdownIcon={<Icon as={MaterialCommunityIcons} name="sort-variant" color="gray.400" />}
+                _selectedItem={{ color: 'primary.600' }}
+              >
               <Select.Item label="Grams" value="g"/>
               <Select.Item label="Pieces" value="pcs"/>
               <Select.Item label="Liters" value="L"/>
             </Select>
-          </Row>
-        </Column>
-      </Column>
+            </Row>
+          </Column>
+        </Row>
+       </Box>
   )
 }
