@@ -36,8 +36,9 @@ export default function SettingsActionSheet(args) {
   const deleteAccount = async () => {
     try {
       await api.user.deleteAccount(auth.access_token);
-      await logout();
+      logout();
     } catch (error) {
+      console.log(error);
       return error;
     }
   }

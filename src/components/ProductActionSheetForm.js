@@ -63,7 +63,7 @@ export default function ProductActionSheetForm() {
               >
               <Select.Item label="Grams" value="g"/>
               <Select.Item label="Pieces" value="pcs"/>
-              <Select.Item label="Liters" value="L"/>
+              <Select.Item label="Milliliters" value="mL"/>
             </Select>
             </Row>
           </Column>

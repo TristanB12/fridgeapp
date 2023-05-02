@@ -1,11 +1,11 @@
-import { Box, Button, Column, Icon, Input, Row, Image, KeyboardAvoidingView, ScrollView } from "native-base";
+import { Box, Button, Column, Icon, Input, Row, Image, KeyboardAvoidingView, ScrollView, Center, Heading, Text } from "native-base";
 import React, { useState } from "react";
 import api from "../api";
 import FontAwesome from '@expo/vector-icons/FontAwesome';
 import BText from "../components/base/BText";
 import BHeading from "../components/base/BHeading";
 
-import illustration from '../../assets/images/signup-illustration.png';
+import illustration from '../../assets/icon.png';
 import { loadApp } from "../navigation/onAppStarting";
 import productListAtom from "../recoil/atoms/productList";
 import { useRecoilState } from "recoil";
@@ -54,7 +54,7 @@ export default function SignupScreen() {
       });
       await registerForPushNotificationsAsync(res.data.access_token);
       loadApp(setAuth, setProductList);
-      navigation.navigate('Fridge');
+      navigation.navigate('Home');
       changeIsButtonLoading(false);
     } catch (error) {
       if (error?.response.status < 500) {
@@ -69,9 +69,12 @@ export default function SignupScreen() {
   }
   return (
     <KeyboardAvoidingView flex={1} behavior='padding'>
-    <ScrollView m={8}>
-      <Image alignSelf="center" source={illustration} size={220} alt="login illustration" />
-      <BHeading mb={6}>Sign up</BHeading>
+    <Center flex={1} m={8}>
+    <Row justifyContent="center" alignItems="center">
+          <Image alignSelf="center" source={illustration} rounded={10} size={41} alt="login illustration" />
+          <Heading ml={4}>Fridgy</Heading>
+        </Row>
+      <BHeading alignSelf="flex-start" my={6}>Sign up</BHeading>
       <Column>
         <Row mb={3} justifyContent="space-between" alignItems="center">
           <Icon as={FontAwesome} name="at" size={5} color='grey'/>
@@ -121,8 +124,8 @@ export default function SignupScreen() {
           Sign up
         </Button>
       </Column>
-      <BText alignSelf="center">Joined us before? <BText color="secondary.600" fontWeight="semibold" onPress={navigateToLogin}>Login</BText></BText>
-    </ScrollView>
+      <Text alignSelf="center">Joined us before? <Text color="primary.600" fontWeight="semibold" onPress={navigateToLogin}>Login</Text></Text>
+    </Center>
     </KeyboardAvoidingView>
   );
 }

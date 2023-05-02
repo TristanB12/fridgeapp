@@ -15,6 +15,7 @@ import { Icon, useDisclose } from "native-base";
 import Material from '@expo/vector-icons/MaterialIcons';
 import SettingsActionSheet from "../components/SettingsActionSheet";
 import ListDetails from "../screens/ListDetails";
+import SmartListDetailsScreen from "../screens/SmartListDetails";
 
 const Stack = createNativeStackNavigator();
 
@@ -50,15 +51,17 @@ export default function StackNavigation() {
           ) : (
             <Stack.Group>
               <Stack.Screen options={{
+                headerTitle: 'Dashboard',
                 contentStyle: {backgroundColor: '#F2F2F7'},
                 headerRight: () => (
-                  <Pressable onPress={openSettingsActionSheet}>
+                  <Pressable p={4} onPress={openSettingsActionSheet}>
                     <Icon as={Material} alignSelf="flex-end" name="settings" size={25} color="primary.600" />
                     <SettingsActionSheet isOpen={isOpen} onClose={onClose}  />
                   </Pressable>
                 )
               }} name="Home" component={HomeScreen} />
               <Stack.Screen options={({route, navigation}) => ({contentStyle: {backgroundColor: '#F2F2F7'}, title: route.params.list.name })} name="ListDetails" component={ListDetails} />
+              <Stack.Screen options={({route, navigation}) => ({contentStyle: {backgroundColor: '#F2F2F7'}, title: route.params.title })} name="SmartListDetails" component={SmartListDetailsScreen} />
             </Stack.Group>
           )
         }

@@ -13,7 +13,14 @@ const linkDevice = async (accessToken, notificationToken) => axiosAPI({
   data: { notification_token: notificationToken }
 })
 
+const getDashboard = async (accessToken) => axiosAPI({
+  method: 'GET',
+  url: '/me/dashboard',
+  headers: { Authorization: 'Bearer ' +  accessToken},
+});
+
 export {
   deleteAccount,
-  linkDevice
+  linkDevice,
+  getDashboard
 }

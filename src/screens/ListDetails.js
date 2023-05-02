@@ -7,10 +7,12 @@ import { useState } from "react";
 import authAtom from "../recoil/atoms/auth";
 import ProductActionSheet from "../components/ProductActionSheet";
 import api from "../api";
+import productListAtom from "../recoil/atoms/productList";
 
 export default function ListDetailsScreen({ route }) {
   const [auth, setAuth] = useRecoilState(authAtom);
   const [product, setProduct] = useRecoilState(actionSheetProductAtom);
+  const [productLists, setProductLists] = useRecoilState(productListAtom);
   const { isOpen, onClose, onOpen } = useDisclose();
   const [action, setAction] = useState(undefined);
   const [list, setList] = useState(route.params.list);
@@ -38,8 +40,8 @@ export default function ListDetailsScreen({ route }) {
     setList(undefined);
     try {
       const res = await api.lists.getOne(auth.access_token, listId);
-      console.log(res.data);
       setList(res.data);
+      setProductLists((prev) => prev.map(e => { return e.id == res.data.id ? res.data :  e }));
     } catch (error) {
       console.log(error);
       setList(null);      

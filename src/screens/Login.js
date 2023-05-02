@@ -1,11 +1,11 @@
-import { Box, Button, Column, Icon, Input, Row, Image, KeyboardAvoidingView, ScrollView } from "native-base";
+import { Box, Button, Column, Icon, Input, Row, Image, KeyboardAvoidingView, ScrollView, Text, Heading, Center } from "native-base";
 import React, { useState } from "react";
 import api from "../api";
 import FontAwesome from '@expo/vector-icons/FontAwesome';
 import BText from "../components/base/BText";
 import BHeading from "../components/base/BHeading";
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import illustration from '../../assets/images/login-illustration.png'
+import illustration from '../../assets/icon.png'
 import { useRecoilState } from "recoil";
 import authAtom from "../recoil/atoms/auth";
 import { useNavigation } from "@react-navigation/native";
@@ -48,7 +48,7 @@ export default function LoginScreen() {
       });
       await registerForPushNotificationsAsync(res.data.access_token);
       loadApp(setAuth, setProductList);
-      navigation.navigate('Fridge');
+      navigation.navigate('Home');
       changeIsButtonLoading(false);
     } catch (error) {
       if (error.response.status < 500) {
@@ -62,9 +62,12 @@ export default function LoginScreen() {
   }
   return (
     <KeyboardAvoidingView behavior="padding" flex={1}>
-      <ScrollView m={8}>
-        <Image alignSelf="center" source={illustration} size={220} alt="login illustration" />
-        <BHeading mb={6}>Login</BHeading>
+      <Center flex={1} m={8}>
+        <Row justifyContent="center" alignItems="center">
+          <Image alignSelf="center" source={illustration} rounded={10} size={41} alt="login illustration" />
+          <Heading ml={4}>Fridgy</Heading>
+        </Row>
+        <BHeading alignSelf="flex-start" my={6}>Login</BHeading>
         <Column>
           <Row mb={3} justifyContent="space-between" alignItems="center">
             <Icon as={FontAwesome} name="at" size={5} color='grey'/>
@@ -102,8 +105,8 @@ export default function LoginScreen() {
             Login
           </Button>
         </Column>
-        <BText alignSelf="center">New to Fridgy? <BText color="secondary.600" fontWeight="semibold" onPress={navigateToRegister}>Register</BText></BText>
-      </ScrollView>
+        <Text fontWeight="light" alignSelf="center">New to Fridgy? <Text color="primary.600" fontWeight={800} onPress={navigateToRegister}>Register</Text></Text>
+      </Center>
     </KeyboardAvoidingView>
   );
 }

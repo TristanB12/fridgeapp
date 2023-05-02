@@ -8,10 +8,12 @@ import productListAtom from "../recoil/atoms/productList";
 import api from "../api";
 import authAtom from "../recoil/atoms/auth";
 import { RefreshControl } from "react-native";
-import { useNavigation } from "@react-navigation/native";
+import { useIsFocused, useNavigation } from "@react-navigation/native";
+import dashboardAtom from "../recoil/atoms/dashboard";
 
 export default function HomeScreen() {
   const [lists, setList] = useRecoilState(productListAtom);
+  const [dashboard, setDashboard] = useRecoilState(dashboardAtom);
   const [auth, setAuth] = useRecoilState(authAtom);
   const { isOpen, onOpen, onClose } = useDisclose();
   const [refreshing, setRefreshing] = useState(false);
@@ -24,12 +26,13 @@ export default function HomeScreen() {
     onClose();
   }
 
-  async function reload() {
-    setRefreshing(true);
+  async function reload(hideReload = false) {
+    if (!hideReload) setRefreshing(true);
     try {
-      const res = await api.lists.getAll(auth.access_token);
-      console.log(res.data)
-      setList(res.data);
+      const resLists = await api.lists.getAll(auth.access_token);
+      setList(resLists.data);
+      const resDashboard = await api.user.getDashboard(auth.access_token);
+      setDashboard(resDashboard.data);
       setRefreshing(false);
     } catch (error) {
       console.log(error);
@@ -41,8 +44,7 @@ export default function HomeScreen() {
     reload();
   }, []);
 
-
-  if (!lists) {
+  if (!lists || !dashboard || lists.length == 0) {
     return (
       <Center flex={1}>
         <Spinner accessibilityLabel="Loading data" />
@@ -58,30 +60,30 @@ export default function HomeScreen() {
       <Column mt={8}>
         <BHeading mt={8} mb={2}>Important</BHeading>
         <Column backgroundColor="white" borderRadius={10} overflow="hidden">
-          <Pressable _pressed={{ backgroundColor: 'gray.300' }}>
+          <Pressable _pressed={{ backgroundColor: 'gray.300' }} onPress={() => navigation.navigate('SmartListDetails', { list: dashboard.red, name: 'red', title: 'Expired' })}>
             <Row pl={2} justifyContent="space-between" alignItems="center">
               <Circle size="25px" bg="red.600"><Icon as={Material} name="calendar-today" color="white" /></Circle>
               <Row py={2} pr={2} w="90%" justifyContent="space-between" borderBottomColor="gray.200" borderBottomWidth={1}>
                 <Text fontSize={16} fontWeight={200}>Expired</Text>
-                <Text fontSize={16} fontWeight={300}>3</Text>
+                <Text fontSize={16} fontWeight={300}>{ dashboard.red.length }</Text>
               </Row>
             </Row>
           </Pressable>
-          <Pressable _pressed={{ backgroundColor: 'gray.300' }}>
+          <Pressable _pressed={{ backgroundColor: 'gray.300' }} onPress={() => navigation.navigate('SmartListDetails', { list: dashboard.orange, name: 'orange', title: 'Expiring soon' })}>
             <Row pl={2} justifyContent="space-between" alignItems="center">
               <Circle size="25px" bg="orange.600"><Icon as={Material} name="warning" color="white" /></Circle>
               <Row py={2} pr={2} w="90%" justifyContent="space-between" borderBottomColor="gray.200" borderBottomWidth={1}>
                 <Text fontSize={16} fontWeight={200}>Expires in less than 3 days</Text>
-                <Text fontSize={16} fontWeight={300}>3</Text>
+                <Text fontSize={16} fontWeight={300}>{ dashboard.orange.length }</Text>
               </Row>
             </Row>
           </Pressable>
-          <Pressable _pressed={{ backgroundColor: 'gray.300' }}>
+          <Pressable _pressed={{ backgroundColor: 'gray.300' }} onPress={() => navigation.navigate('SmartListDetails', { list: dashboard.yellow, name: 'yellow', title: 'Expiring in a week' })}>
             <Row pl={2} justifyContent="space-between" alignItems="center">
               <Circle size="25px" bg="yellow.600"><Icon as={Material} name="info" color="white" /></Circle>
               <Row py={2} pr={2} w="90%" justifyContent="space-between">
                 <Text fontSize={16} fontWeight={200}>Expires in less than 7 days</Text>
-                <Text fontSize={16} fontWeight={300}>3</Text>
+                <Text fontSize={16} fontWeight={300}>{ dashboard.yellow.length }</Text>
               </Row>
             </Row>
           </Pressable>
@@ -89,7 +91,7 @@ export default function HomeScreen() {
         <Column>
           <Row mb={2} mt={6} justifyContent="space-between">
             <BHeading>My lists</BHeading>
-            <Pressable borderRadius={10} size="27px" bg="primary.600" onPress={openAddListActionSheet} _pressed={{ bg: 'primary.800', size: '29px' }}><Icon as={MaterialCommunityIcons} name="plus" size={"27px"} color="white" /></Pressable>
+            {/* <Pressable borderRadius={10} size="27px" bg="primary.600" onPress={openAddListActionSheet} _pressed={{ bg: 'primary.800', size: '29px' }}><Icon as={MaterialCommunityIcons} name="plus" size={"27px"} color="white" /></Pressable> */}
           </Row>
           <Column backgroundColor="white" borderRadius={10} overflow="hidden">
             <Pressable _pressed={{ backgroundColor: 'gray.300' }}  onPress={() => navigation.navigate('ListDetails', { list: lists.find(e => e.name == 'Fridge')})}>

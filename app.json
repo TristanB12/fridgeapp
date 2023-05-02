@@ -2,7 +2,7 @@
   "expo": {
     "name": "fridgeapp",
     "slug": "fridgeapp",
-    "version": "1.0.0",
+    "version": "2.0",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
     "userInterfaceStyle": "light",
@@ -15,7 +15,7 @@
       "**/*"
     ],
     "ios": {
-      "buildNumber":"2",
+      "buildNumber":"4",
       "supportsTablet": true,
       "bundleIdentifier": "com.tristanb12.fridgeapp",
       "infoPlist": {

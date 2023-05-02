@@ -19,7 +19,8 @@ async function registerForPushNotificationsAsync(accessToken) {
   console.log('Notifications token: ' + token);
 
   try {
-    await api.user.linkDevice(accessToken, token)
+    const res = await api.user.linkDevice(accessToken, token);
+    console.log(res.data)
   } catch (error) {
     console.log(error);
     throw error;
